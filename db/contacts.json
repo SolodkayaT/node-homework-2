@@ -9,5 +9,10 @@
   { "name": "Poly", "email": "poly@mail.com", "phone": "0985562324", "id": 3 },
   { "name": "Hary", "email": "hary@mail.com", "phone": "0985562324", "id": 4 },
   { "name": "Jack", "email": "jack@mail.com", "phone": "0985562324", "id": 5 },
-  { "name": "Mini", "email": "mini@mail.com", "phone": "0985562324", "id": 6 }
+  {
+    "name": "Michel",
+    "email": "michel@mail.com",
+    "phone": "095339897569",
+    "id": 6
+  }
 ]

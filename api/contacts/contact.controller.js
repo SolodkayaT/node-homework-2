@@ -1,56 +1,70 @@
 const fs = require("fs");
 const { promises: fsPromises } = fs;
 const path = require("path");
-
 const contacts = require("../../db/contacts.json");
 const contactsPath = path.join(__dirname, "../../db/contacts.json");
-
 const Joi = require("joi");
 
-module.exports = class ContactController {
-  static listContacts(req, res, next) {
+class ContactController {
+  get getContact() {
+    return this._getContact.bind(this);
+  }
+  get updateContact() {
+    return this._updateContact.bind(this);
+  }
+  get removeContact() {
+    return this._removeContact.bind(this);
+  }
+  get addContact() {
+    return this._addContact.bind(this);
+  }
+
+  listContacts(req, res, next) {
     return res.status(200).json(contacts);
   }
 
-  static getContact(req, res, next) {
-    const id = parseInt(req.params.id);
-    const targetContactIndex = contacts.findIndex(
-      (contact) => contact.id === id
-    );
-    if (targetContactIndex === -1) {
+  _getContact(req, res, next) {
+    const targetContactIndex = this.findContactIndexById(req.params.id);
+    if (targetContactIndex === undefined) {
       return res.status(404).send({ message: "Not found" });
     }
     return res.status(200).send(contacts[targetContactIndex]);
   }
 
-  static addContact(req, res, next) {
+  _addContact(req, res, next) {
     const newContact = {
       ...req.body,
       id: contacts.length + 1,
     };
     contacts.push(newContact);
-    const contactsToWrite = JSON.stringify(contacts);
-    fsPromises.writeFile(contactsPath, contactsToWrite);
+    this.writeContactToDataBase(contacts);
     return res.status(201).send(contacts);
   }
 
-  static updateContact(req, res, next) {
-    const id = parseInt(req.params.id);
-    const targetContactIndex = contacts.findIndex(
-      (contact) => contact.id === id
-    );
-    if (targetContactIndex === -1) {
+  _updateContact(req, res, next) {
+    const targetContactIndex = this.findContactIndexById(req.params.id);
+    console.log(targetContactIndex);
+    if (targetContactIndex === undefined) {
       return res.status(404).send({ message: "Not found" });
     }
     contacts[targetContactIndex] = {
       ...contacts[targetContactIndex],
       ...req.body,
     };
-    const contactsToWrite = JSON.stringify(contacts);
-    fsPromises.writeFile(contactsPath, contactsToWrite);
+    this.writeContactToDataBase(contacts);
     return res.status(200).send(contacts);
   }
-  static validateCreateContact(req, res, next) {
+
+  _removeContact(req, res, next) {
+    const targetContactIndex = this.findContactIndexById(req.params.id);
+    if (targetContactIndex === undefined) {
+      return res.status(404).send({ message: "Not found" });
+    }
+    contacts.splice(targetContactIndex, 1);
+    this.writeContactToDataBase(contacts);
+    return res.status(200).send({ message: "Contact deleted" });
+  }
+  validateCreateContact(req, res, next) {
     const createContactRules = Joi.object({
       name: Joi.string().required(),
       email: Joi.string().required(),
@@ -65,7 +79,7 @@ module.exports = class ContactController {
     next();
   }
 
-  static validateUpdateContact(req, res, next) {
+  validateUpdateContact(req, res, next) {
     const updateContactRules = Joi.object({
       name: Joi.string(),
       email: Joi.string(),
@@ -83,4 +97,20 @@ module.exports = class ContactController {
     }
     next();
   }
-};
+  findContactIndexById(contactId) {
+    const id = parseInt(contactId);
+    const targetContactIndex = contacts.findIndex(
+      (contact) => contact.id === id
+    );
+    if (targetContactIndex === -1) {
+      return;
+    }
+    return targetContactIndex;
+  }
+  writeContactToDataBase(newContacts) {
+    const contactsToWrite = JSON.stringify(newContacts);
+    return fsPromises.writeFile(contactsPath, contactsToWrite);
+  }
+}
+
+module.exports = new ContactController();

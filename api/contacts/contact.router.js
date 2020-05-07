@@ -4,6 +4,7 @@ const contactRouter = Router();
 
 contactRouter.get("/", ContactController.listContacts);
 contactRouter.get("/:id", ContactController.getContact);
+
 contactRouter.post(
   "/",
   ContactController.validateCreateContact,
@@ -15,5 +16,7 @@ contactRouter.patch(
   ContactController.validateUpdateContact,
   ContactController.updateContact
 );
+
+contactRouter.delete("/:id", ContactController.removeContact);
 
 module.exports = contactRouter;

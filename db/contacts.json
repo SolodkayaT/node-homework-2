@@ -7,5 +7,7 @@
   },
   { "id": 2, "name": "Kiwi", "email": "kiwi@mail.com", "phone": "0967777777" },
   { "name": "Poly", "email": "poly@mail.com", "phone": "0985562324", "id": 3 },
-  { "name": "Hary", "email": "hary@mail.com", "phone": "0985562324", "id": 4 }
+  { "name": "Hary", "email": "hary@mail.com", "phone": "0985562324", "id": 4 },
+  { "name": "Jack", "email": "jack@mail.com", "phone": "0985562324", "id": 5 },
+  { "name": "Mini", "email": "mini@mail.com", "phone": "0985562324", "id": 6 }
 ]

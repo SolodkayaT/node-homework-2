@@ -24,45 +24,61 @@ class ContactController {
   }
 
   _getContact(req, res, next) {
-    const targetContactIndex = this.findContactIndexById(req.params.id);
-    if (targetContactIndex === undefined) {
-      return res.status(404).send({ message: "Not found" });
+    try {
+      const targetContactIndex = this.findContactIndexById(req.params.id);
+      if (targetContactIndex === undefined) {
+        return res.status(404).send({ message: "Not found" });
+      }
+      return res.status(200).send(contacts[targetContactIndex]);
+    } catch (error) {
+      next(error);
     }
-    return res.status(200).send(contacts[targetContactIndex]);
   }
 
   _addContact(req, res, next) {
-    const newContact = {
-      ...req.body,
-      id: contacts.length + 1,
-    };
-    contacts.push(newContact);
-    this.writeContactToDataBase(contacts);
-    return res.status(201).send(contacts);
+    try {
+      const newContact = {
+        ...req.body,
+        id: contacts.length + 1,
+      };
+      contacts.push(newContact);
+      this.writeContactToDataBase(contacts);
+      return res.status(201).send(contacts);
+    } catch (error) {
+      next(error);
+    }
   }
 
   _updateContact(req, res, next) {
-    const targetContactIndex = this.findContactIndexById(req.params.id);
-    console.log(targetContactIndex);
-    if (targetContactIndex === undefined) {
-      return res.status(404).send({ message: "Not found" });
+    try {
+      const targetContactIndex = this.findContactIndexById(req.params.id);
+      console.log(targetContactIndex);
+      if (targetContactIndex === undefined) {
+        return res.status(404).send({ message: "Not found" });
+      }
+      contacts[targetContactIndex] = {
+        ...contacts[targetContactIndex],
+        ...req.body,
+      };
+      this.writeContactToDataBase(contacts);
+      return res.status(200).send(contacts);
+    } catch (error) {
+      next(error);
     }
-    contacts[targetContactIndex] = {
-      ...contacts[targetContactIndex],
-      ...req.body,
-    };
-    this.writeContactToDataBase(contacts);
-    return res.status(200).send(contacts);
   }
 
   _removeContact(req, res, next) {
-    const targetContactIndex = this.findContactIndexById(req.params.id);
-    if (targetContactIndex === undefined) {
-      return res.status(404).send({ message: "Not found" });
+    try {
+      const targetContactIndex = this.findContactIndexById(req.params.id);
+      if (targetContactIndex === undefined) {
+        return res.status(404).send({ message: "Not found" });
+      }
+      contacts.splice(targetContactIndex, 1);
+      this.writeContactToDataBase(contacts);
+      return res.status(200).send({ message: "Contact deleted" });
+    } catch (error) {
+      next(error);
     }
-    contacts.splice(targetContactIndex, 1);
-    this.writeContactToDataBase(contacts);
-    return res.status(200).send({ message: "Contact deleted" });
   }
   validateCreateContact(req, res, next) {
     const createContactRules = Joi.object({

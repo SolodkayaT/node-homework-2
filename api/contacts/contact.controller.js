@@ -7,19 +7,6 @@ const Joi = require("joi");
 const createControllerProxy = require("../helpers/controllerProxy");
 
 class ContactController {
-  /*   get getContact() {
-    return this._getContact.bind(this);
-  }
-  get updateContact() {
-    return this._updateContact.bind(this);
-  }
-  get removeContact() {
-    return this._removeContact.bind(this);
-  }
-  get addContact() {
-    return this._addContact.bind(this);
-  } */
-
   listContacts(req, res, next) {
     return res.status(200).json(contacts);
   }

@@ -4,9 +4,10 @@ const path = require("path");
 const contacts = require("../../db/contacts.json");
 const contactsPath = path.join(__dirname, "../../db/contacts.json");
 const Joi = require("joi");
+const createControllerProxy = require("../helpers/controllerProxy");
 
 class ContactController {
-  get getContact() {
+  /*   get getContact() {
     return this._getContact.bind(this);
   }
   get updateContact() {
@@ -17,13 +18,13 @@ class ContactController {
   }
   get addContact() {
     return this._addContact.bind(this);
-  }
+  } */
 
   listContacts(req, res, next) {
     return res.status(200).json(contacts);
   }
 
-  _getContact(req, res, next) {
+  getContact(req, res, next) {
     try {
       const targetContactIndex = this.findContactIndexById(req.params.id);
       if (targetContactIndex === undefined) {
@@ -35,7 +36,7 @@ class ContactController {
     }
   }
 
-  _addContact(req, res, next) {
+  addContact(req, res, next) {
     try {
       const newContact = {
         ...req.body,
@@ -49,7 +50,7 @@ class ContactController {
     }
   }
 
-  _updateContact(req, res, next) {
+  updateContact(req, res, next) {
     try {
       const targetContactIndex = this.findContactIndexById(req.params.id);
       console.log(targetContactIndex);
@@ -67,7 +68,7 @@ class ContactController {
     }
   }
 
-  _removeContact(req, res, next) {
+  removeContact(req, res, next) {
     try {
       const targetContactIndex = this.findContactIndexById(req.params.id);
       if (targetContactIndex === undefined) {
@@ -129,4 +130,4 @@ class ContactController {
   }
 }
 
-module.exports = new ContactController();
+module.exports = createControllerProxy(new ContactController());
